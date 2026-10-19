@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Basel Jawash — LED Screen Operator & Programmer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF0F4; --surface:#FFFFFF; --ink:#14161B; --muted:#505766; --line:#D3D8E1;
+  --panel:#13151B; --pix:#F2F4F8; --cyan:#0A8FA8; --mag:#C21F70; --amber:#B86E00;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1116; --surface:#171A21; --ink:#EDF0F5; --muted:#A3AABA; --line:#2A2F3A;
+  --panel:#07080B; --cyan:#35D0E8; --mag:#F0509A; --amber:#FFB020; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#0F1116; --surface:#171A21; --ink:#EDF0F5; --muted:#A3AABA; --line:#2A2F3A;
+  --panel:#07080B; --cyan:#35D0E8; --mag:#F0509A; --amber:#FFB020; color-scheme:dark;}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 Barlow,system-ui,sans-serif}
+h1,h2,h3{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:700;line-height:1.05;margin:0}
+a{color:inherit}
+a:focus-visible,button:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+section{padding:64px 0 8px}
+h2{font-size:clamp(34px,6vw,52px);margin-bottom:26px}
+p{margin:0 0 14px;max-width:68ch}
+
+/* hero */
+.hero{padding:28px 0 0}
+.panel{background:var(--panel);border-radius:6px;padding:14px;border:1px solid var(--line)}
+.panel canvas{display:block;width:100%;height:auto;aspect-ratio:16/6}
+.hero-meta{display:grid;gap:18px;margin-top:26px;grid-template-columns:1.4fr 1fr}
+.hero h1{font-size:clamp(46px,9vw,92px)}
+.hero .role{font-size:19px;color:var(--muted);margin-top:12px;max-width:44ch}
+.contact{display:flex;flex-direction:column;gap:6px;align-items:flex-start;font-weight:500}
+.btn{display:inline-block;padding:11px 18px;border-radius:4px;background:var(--ink);color:var(--bg);text-decoration:none;font-weight:600;margin-top:6px}
+.contact a:not(.btn){text-underline-offset:3px}
+@media(max-width:700px){.hero-meta{grid-template-columns:1fr}}
+
+/* numbers */
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;margin-top:40px;border-top:1px solid var(--line)}
+.facts div{padding:18px 18px 18px 0}
+.facts b{display:block;font:700 34px/1 "Barlow Condensed",sans-serif}
+.facts span{color:var(--muted);font-size:15px}
+
+/* featured work */
+.feature{display:grid;grid-template-columns:minmax(150px,230px) 1fr;gap:26px;padding:26px 0;border-top:1px solid var(--line)}
+.feature .big{font:700 clamp(54px,10vw,96px)/0.9 "Barlow Condensed",sans-serif;color:var(--mag)}
+.feature .big small{font-size:.4em;color:var(--muted);margin-left:2px}
+.feature h3{font-size:30px;margin-bottom:8px}
+.when{color:var(--muted);font-size:15px;margin-bottom:8px}
+@media(max-width:640px){.feature{grid-template-columns:1fr;gap:10px}}
+
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:10px}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:20px}
+.box h3{font-size:24px;margin-bottom:10px}
+.box ul{margin:0;padding-left:18px}
+.box li{margin-bottom:6px}
+
+/* toolkit */
+.kit{display:grid;gap:0}
+.kit div{display:grid;grid-template-columns:200px 1fr;gap:18px;padding:16px 0;border-top:1px solid var(--line)}
+.kit dt{font:700 22px/1.2 "Barlow Condensed",sans-serif}
+.kit dd{margin:0;color:var(--muted)}
+@media(max-width:640px){.kit div{grid-template-columns:1fr;gap:4px}}
+
+/* experience */
+.job{padding:20px 0 20px 22px;border-left:3px solid var(--cyan);margin-left:2px}
+.job + .job{border-left-color:var(--line)}
+.job h3{font-size:26px}
+.job .when{margin:2px 0 10px}
+.job ul{margin:0;padding-left:18px}.job li{margin-bottom:6px;max-width:70ch}
+
+.creds{columns:2 320px;column-gap:30px;padding-left:18px;margin:0}
+.creds li{margin-bottom:10px;break-inside:avoid}
+footer{margin-top:70px;padding:30px 0 40px;border-top:1px solid var(--line);color:var(--muted);font-size:15px}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="hero">
+    <div class="panel"><canvas id="led" width="1280" height="480" role="img" aria-label="LED display showing Basel Jawash, LED screen operator and programmer"></canvas></div>
+    <div class="hero-meta">
+      <div>
+        <h1>Basel Jawash</h1>
+        <p class="role">LED screen operator and programmer, and video director, building and running big screens for live events in Kuwait.</p>
+      </div>
+      <div class="contact">
+        <a href="mailto:baseljawash37@gmail.com">baseljawash37@gmail.com</a>
+        <a href="tel:+96560984719">+965 6098 4719</a>
+      </div>
+    </div>
+    <div class="facts">
+      <div><b>210 m²</b><span>of LED programmed solo for live TV</span></div>
+      <div><b>10 years</b><span>in event production since 2016</span></div>
+      <div><b>NCE</b><span>NovaStar certified engineer</span></div>
+      <div><b>2 languages</b><span>Arabic (native), English (professional)</span></div>
+    </div>
+  </header>
+
+  <section id="about">
+    <h2>About</h2>
+    <p>I prepare, program and operate LED screens for concerts, ceremonies, TV productions and public events. My work covers screen mapping, processor setup, signal routing, live playback and pre-show testing, then keeping the picture stable while the show runs.</p>
+    <p>I started in sound production at a family-owned company in 2016, moved into LED and video in 2020, and joined ARG Production in 2024. I've been working in live events since an early age, and I'm comfortable making real-time playback decisions under pressure.</p>
+    <p>Outside the venue I bring over 10 years of hands-on computer experience: hardware, operating systems, troubleshooting and web development. I'm studying cybersecurity at Kuwait Technical College.</p>
+  </section>
+
+  <section id="work">
+    <h2>Selected work</h2>
+    <article class="feature">
+      <div class="big">210<small>m²</small></div>
+      <div>
+        <h3>Kuwait Television — Sabah Al-Khair Ya Kuwait</h3>
+        <div class="when">2025 and 2026 · LED Screen Operator and Programmer</div>
+        <p>Programmed and operated about 210 m² of LED screens at the Ministry of Information on my own, for two seasons of the live morning show. That covered the full technical requirements of a large-scale LED setup.</p>
+      </div>
+    </article>
+    <article class="feature">
+      <div class="big">2<small>seasons</small></div>
+      <div>
+        <h3>Winter Wonderland Kuwait</h3>
+        <div class="when">2024–2026 · LED Screen Operator and Programmer</div>
+        <p>Ran LED screens for live concerts with Issa Al Marzooq, Bader Al Shuaibi, Daffy, Al Shab Rayan and Solara Show, and supported screen configuration for the Ferris wheel attraction.</p>
+      </div>
+    </article>
+    <article class="feature">
+      <div class="big">2<small>years</small></div>
+      <div>
+        <h3>Saad Al-Abdullah Academy for Security Sciences</h3>
+        <div class="when">2024 and 2025 · LED Screen Operator and Programmer</div>
+        <p>Prepared and operated LED display systems for officer graduation ceremonies and officer lottery draw events.</p>
+      </div>
+    </article>
+
+    <div class="cols">
+      <div class="box">
+        <h3>Television and ceremonies</h3>
+        <ul>
+          <li>VO Studio, The Seven Readings (Ramadan 2026): LED programming for a TV production</li>
+          <li>Emirati–Kuwaiti Media Ceremony (2026)</li>
+          <li>In Safe Hands with Ali Najm, Season 1: sound operator</li>
+          <li>Diwaniya of Nabati Poets, Ramadan event: LED and video production support</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h3>Corporate and public events</h3>
+        <ul>
+          <li>UAE Falcons International Cup (2025), Jaber Al-Ahmad International Stadium</li>
+          <li>Ooredoo 51st Celebration (2025), Kuwait Diplomatic Institute</li>
+          <li>General Conference of Association of Arab Universities (2025)</li>
+          <li>KIF Automotive Exhibition, Primark Kuwait Launch, GCC Zain Cup Launch, COMFESTCON</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h3>Malls, parks and weddings</h3>
+        <ul>
+          <li>The Warehouse at Al Kout Mall and Khiran Mall (2025–2026): Ramadan and both Eid periods</li>
+          <li>South Sabahiya Park (2024–2025): LED, sound and lighting</li>
+          <li>Weddings and marriage events (2024–2026): programming, playback and visual presentation</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="toolkit">
+    <h2>Toolkit</h2>
+    <dl class="kit" style="margin:0">
+      <div><dt>LED and processors</dt><dd>NovaStar VX and H-series, NovaLCT, SmartLCT, ViPlex Express, LEDset. Mapping, resolution, multi-screen layouts, signal routing.</dd></div>
+      <div><dt>Playback and show control</dt><dd>Resolume Arena, WATCHOUT, Kommander, Bitfocus Companion. Layers, overlays, compositions, OSC and MIDI workflows, remote operation, and custom Companion module and integration work.</dd></div>
+      <div><dt>Video signals</dt><dd>NDI, HDMI, SDI, DisplayPort, vMix, OBS Studio, signal troubleshooting.</dd></div>
+      <div><dt>IT and networking</dt><dd>Windows, macOS, Linux, PC builds and upgrades, diagnostics, Cisco networking, TCP/IP, Ethernet and LAN, switches and routers, Packet Tracer, SSH and Telnet, VirtualBox.</dd></div>
+      <div><dt>Software and web</dt><dd>Websites, web applications, custom utilities and tools, debugging, front-end and back-end concepts, technical documentation.</dd></div>
+      <div><dt>Video and design</dt><dd>Premiere Pro, CapCut, Canva, Blender (basic 3D modelling).</dd></div>
+      <div><dt>Audio and music</dt><dd>FL Studio, MIDI sequencing, virtual instruments, audio interfaces, guitar recording, Rekordbox, VirtualDJ.</dd></div>
+    </dl>
+  </section>
+
+  <section id="experience">
+    <h2>Experience</h2>
+    <div class="job">
+      <h3>Al-Raisi Group (ARG Production)</h3>
+      <div class="when">September 2024 – present · LED Screen Operator, Programmer and Video Director</div>
+      <ul>
+        <li>Operate and program LED systems for concerts, corporate events, public celebrations and ceremonies.</li>
+        <li>Configure NovaStar processors and prepare mapping, resolutions, playback outputs and multi-screen layouts.</li>
+        <li>Run live visuals in Resolume Arena and WATCHOUT; use Kommander and Companion for show control.</li>
+        <li>Test before every event, fix problems fast, and coordinate with video, lighting, audio and event teams.</li>
+      </ul>
+    </div>
+    <div class="job">
+      <h3>FoxEvent</h3>
+      <div class="when">2016–2020 sound production · 2020–2024 LED screen operation and video direction</div>
+      <ul>
+        <li>Set up, tested and ran sound for weddings, ceremonies, festivals, concerts, conferences and graduations: microphones, speakers, mixers and signal routing, plus sound checks before events.</li>
+        <li>Moved into LED and video: preparing screen content, playback layouts and resolutions, operating video processors, and managing playback to event schedules.</li>
+        <li>Worked with sound, lighting and event teams to keep visuals in sync with the whole production.</li>
+      </ul>
+    </div>
+    <div class="job">
+      <h3>DARK SPACE — founder</h3>
+      <div class="when">2020–2024 · independent project</div>
+      <ul>
+        <li>Built and managed an online technical community around PlayStation systems and software research, with about 13,000 Discord members, plus YouTube guides and documentation.</li>
+        <li>Did independent research into gaming systems and software, and wrote technical guides for users.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="strengths">
+    <h2>How I work</h2>
+    <ul class="creds">
+      <li>Hands-on technical knowledge across LED, video, IT and software</li>
+      <li>Calm under pressure in live environments</li>
+      <li>Attention to visual accuracy and production timing</li>
+      <li>Independent problem-solving and technical research</li>
+      <li>Fast learning of new software and equipment</li>
+      <li>Clear coordination with video, lighting, audio and event teams</li>
+      <li>Experience with large LED display setups</li>
+      <li>Comfortable moving between IT, video and event workflows</li>
+    </ul>
+  </section>
+
+  <section id="credentials">
+    <h2>Education and certificates</h2>
+    <ul class="creds">
+      <li><b>NovaStar</b> — NCE LED Screen Technician / Certified Engineer</li>
+      <li><b>Kuwait Technical College</b> — Diploma in Cybersecurity, 2025–present</li>
+      <li><b>Studio Z</b> — Introduction to Projection Mapping</li>
+      <li><b>Event Academy</b> — Introductory Course in Event Management</li>
+      <li><b>Resolume Arena</b> — certificate</li>
+      <li><b>KTech Institute for Private Training</b> — TechNext 2.0: Cybersecurity, AI, Cloud and IT</li>
+      <li><b>Al Wataniya Private School</b> — High school, 2010–2023</li>
+    </ul>
+  </section>
+
+  <footer>
+    <a href="mailto:baseljawash37@gmail.com">baseljawash37@gmail.com</a> · Kuwait · References available on request
+  </footer>
+</main>
+
+<script>
+(function(){
+  var c=document.getElementById('led'),ctx=c.getContext('2d');
+  var W=c.width,H=c.height,STEP=10,cols=W/STEP,rows=H/STEP;
+  var msgs=['BASEL JAWASH','LED SCREEN OPERATOR','210 M² LIVE TV','NOVASTAR CERTIFIED','KUWAIT'];
+  var colors=['#F2F4F8','#35D0E8','#F0509A','#FFB020','#F2F4F8'];
+  var off=document.createElement('canvas');off.width=cols;off.height=rows;
+  var o=off.getContext('2d',{willReadFrequently:true});
+  function sample(t){
+    o.clearRect(0,0,cols,rows);o.fillStyle='#fff';o.textAlign='center';o.textBaseline='middle';
+    var size=rows*0.62;
+    do{o.font='700 '+size+'px "Barlow Condensed","Arial Narrow",sans-serif';size-=1;}while(o.measureText(t).width>cols*0.92&&size>8);
+    o.fillText(t,cols/2,rows/2+1);
+    var d=o.getImageData(0,0,cols,rows).data,m=new Float32Array(cols*rows);
+    for(var i=0;i<m.length;i++)m[i]=d[i*4+3]/255;return m;
+  }
+  var cur=null,next=null,i=0,start=0,HOLD=2600,FADE=600;
+  function draw(a,b,k,col){
+    ctx.clearRect(0,0,W,H);
+    for(var y=0;y<rows;y++)for(var x=0;x<cols;x++){
+      var idx=y*cols+x,v=a?a[idx]:0;
+      if(b){var th=(x*7+y*13)%17/17;v=k>th?b[idx]:a[idx];}
+      ctx.beginPath();ctx.arc(x*STEP+STEP/2,y*STEP+STEP/2,STEP*0.36,0,6.283);
+      if(v>0.5){ctx.fillStyle=col;ctx.globalAlpha=1;}else{ctx.fillStyle='#8890A0';ctx.globalAlpha=0.16;}
+      ctx.fill();
+    }
+    ctx.globalAlpha=1;
+  }
+  function run(){
+    cur=sample(msgs[0]);draw(cur,null,0,colors[0]);
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    var t0=performance.now(),phase='hold';
+    function tick(t){
+      var el=t-t0;
+      if(phase==='hold'&&el>HOLD){phase='fade';t0=t;i=(i+1)%msgs.length;next=sample(msgs[i]);el=0;}
+      if(phase==='fade'){
+        var k=Math.min(1,el/FADE);draw(cur,next,k,colors[i]);
+        if(k>=1){cur=next;phase='hold';t0=t;}
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+  (document.fonts&&document.fonts.load?document.fonts.load('700 40px "Barlow Condensed"').then(run,run):run());
+})();
+</script>
+</body>
+</html>
